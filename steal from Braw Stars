@@ -1,0 +1,332 @@
+-- Nome do Jogo
+local NOME_JOGO = "steal from Braw Stars"
+
+-- Coordenadas ATUALIZADAS conforme pedido
+local coordenadas = {
+    spaw = CFrame.new(116,8,66),
+    buymola = CFrame.new(98,8,98),
+    sell_brairots = CFrame.new(100,8,36),
+    base1 = CFrame.new(164,10,5),
+    base2 = CFrame.new(163,10,130),
+    base3 = CFrame.new(250,10,-8), -- Agora com posição da Base 4
+    base4 = CFrame.new(250,10,124), -- Agora com posição da Base 3
+    base5 = CFrame.new(368,10,124),
+    base6 = CFrame.new(379,10,4),
+    base7 = CFrame.new(473,10,139)
+}
+
+-- Serviços do Roblox
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+
+-- Configurações gerais
+local velocidadeAtivada = false
+local menuFixo = false
+local cores = {
+    borda = {Color3.fromRGB(255, 165, 0), Color3.fromRGB(138, 43, 226), Color3.fromRGB(0, 150, 255), Color3.fromRGB(0, 255, 157), Color3.fromRGB(255, 0, 127)},
+    letra = {Color3.new(1,1,1), Color3.fromRGB(0, 255, 255), Color3.fromRGB(255, 220, 80), Color3.fromRGB(180, 255, 140)}
+}
+local indiceCorBorda = 1
+local indiceCorLetra = 1
+
+-- Interface Principal
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "StealFromBrawStarsMenu"
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+
+-- Cabeçalho
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(0, 220, 0, 40)
+Header.Position = UDim2.new(0.02, 0, 0.02, 0)
+Header.BackgroundColor3 = Color3.fromRGB(15,15,15)
+Header.BorderSizePixel = 0
+Header.Draggable = true
+Header.Parent = ScreenGui
+Instance.new("UICorner", Header).CornerRadius = UDim.new(0.3,0)
+
+local TituloJogo = Instance.new("TextLabel")
+TituloJogo.Text = NOME_JOGO
+TituloJogo.Size = UDim2.new(1, -55, 1, 0)
+TituloJogo.Position = UDim2.new(0, 8, 0, 0)
+TituloJogo.BackgroundTransparency = 1
+TituloJogo.TextColor3 = Color3.new(1,1,1)
+TituloJogo.Font = Enum.Font.GothamBold
+TituloJogo.TextSize = 13
+TituloJogo.TextXAlignment = Enum.TextXAlignment.Left
+TituloJogo.Parent = Header
+
+-- Botão Abrir/Fechar
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(0, 47, 0, 28)
+ToggleBtn.Position = UDim2.new(1, -50, 0.5, -14)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+ToggleBtn.Text = "Abrir"
+ToggleBtn.TextColor3 = Color3.new(1,1,1)
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.TextSize = 11
+ToggleBtn.Parent = Header
+Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(0.2,0)
+
+-- Menu Principal
+local Menu = Instance.new("Frame")
+Menu.Size = UDim2.new(0, 250, 0, 260)
+Menu.Position = UDim2.new(0.5, -125, 0.5, -130)
+Menu.BackgroundColor3 = cores.borda[indiceCorBorda]
+Menu.Visible = false
+Menu.Draggable = true
+Menu.Active = true
+Menu.Parent = ScreenGui
+Instance.new("UICorner", Menu).CornerRadius = UDim.new(0.3,0)
+
+local FundoInterno = Instance.new("Frame")
+FundoInterno.Size = UDim2.new(1, -4, 1, -4)
+FundoInterno.Position = UDim2.new(0,2,0,2)
+FundoInterno.BackgroundColor3 = Color3.fromRGB(10,10,10)
+FundoInterno.Parent = Menu
+
+-- Título do Menu
+local TituloMenu = Instance.new("TextLabel")
+TituloMenu.Text = "TP MENU | BRAW STARS"
+TituloMenu.Size = UDim2.new(1, -35, 0, 35)
+TituloMenu.Position = UDim2.new(0,8,0,0)
+TituloMenu.BackgroundColor3 = Color3.fromRGB(20,20,20)
+TituloMenu.TextColor3 = cores.letra[indiceCorLetra]
+TituloMenu.Font = Enum.Font.GothamBold
+TituloMenu.TextSize = 14
+TituloMenu.TextXAlignment = Enum.TextXAlignment.Left
+TituloMenu.Parent = FundoInterno
+
+-- Botão Fechar
+local BtnFechar = Instance.new("TextButton")
+BtnFechar.Size = UDim2.new(0,35,0,35)
+BtnFechar.Position = UDim2.new(1,-35,0,0)
+BtnFechar.BackgroundColor3 = Color3.fromRGB(30,30,30)
+BtnFechar.Text = "X"
+BtnFechar.TextColor3 = cores.letra[indiceCorLetra]
+BtnFechar.Font = Enum.Font.GothamBold
+BtnFechar.TextSize = 14
+BtnFechar.Parent = FundoInterno
+
+-- Abas Lado
+local AbasLado = Instance.new("Frame")
+AbasLado.Size = UDim2.new(0,60,1,-45)
+AbasLado.Position = UDim2.new(0,0,0,35)
+AbasLado.BackgroundColor3 = Color3.fromRGB(20,20,20)
+AbasLado.Parent = FundoInterno
+
+local AbaTP = Instance.new("TextButton")
+AbaTP.Size = UDim2.new(1,0,0,40)
+AbaTP.BackgroundColor3 = Color3.fromRGB(40,40,40)
+AbaTP.Text = "TP"
+AbaTP.TextColor3 = Color3.new(1,1,1)
+AbaTP.Font = Enum.Font.GothamBold
+AbaTP.TextSize = 12
+AbaTP.Parent = AbasLado
+
+local AbaConfig = Instance.new("TextButton")
+AbaConfig.Size = UDim2.new(1,0,0,40)
+AbaConfig.Position = UDim2.new(0,0,0,40)
+AbaConfig.BackgroundColor3 = Color3.fromRGB(25,25,25)
+AbaConfig.Text = "CONFIG"
+AbaConfig.TextColor3 = Color3.new(0.7,0.7,0.7)
+AbaConfig.Font = Enum.Font.GothamBold
+AbaConfig.TextSize = 12
+AbaConfig.Parent = AbasLado
+
+-- ÁREA TP COM ROLAGEM
+local ContainerTP = Instance.new("Frame")
+ContainerTP.Size = UDim2.new(1,-64,1,-50)
+ContainerTP.Position = UDim2.new(0,64,0,40)
+ContainerTP.BackgroundTransparency = 1
+ContainerTP.Visible = true
+ContainerTP.Parent = FundoInterno
+
+local ScrollTP = Instance.new("ScrollingFrame")
+ScrollTP.Size = UDim2.new(1,0,1,0)
+ScrollTP.BackgroundTransparency = 1
+ScrollTP.ScrollBarThickness = 4
+ScrollTP.ScrollBarImageColor3 = Color3.fromRGB(255, 165, 0)
+ScrollTP.CanvasSize = UDim2.new(1,0,0,320)
+ScrollTP.Parent = ContainerTP
+
+local LayoutTP = Instance.new("UIListLayout")
+LayoutTP.Padding = UDim.new(0,6)
+LayoutTP.Parent = ScrollTP
+
+-- ÁREA CONFIG COM ROLAGEM
+local ContainerConfig = Instance.new("Frame")
+ContainerConfig.Size = UDim2.new(1,-64,1,-50)
+ContainerConfig.Position = UDim2.new(0,64,0,40)
+ContainerConfig.BackgroundTransparency = 1
+ContainerConfig.Visible = false
+ContainerConfig.Parent = FundoInterno
+
+local ScrollConfig = Instance.new("ScrollingFrame")
+ScrollConfig.Size = UDim2.new(1,0,1,0)
+ScrollConfig.BackgroundTransparency = 1
+ScrollConfig.ScrollBarThickness = 4
+ScrollConfig.ScrollBarImageColor3 = Color3.fromRGB(255, 165, 0)
+ScrollConfig.CanvasSize = UDim2.new(1,0,0,150)
+ScrollConfig.Parent = ContainerConfig
+
+local LayoutConfig = Instance.new("UIListLayout")
+LayoutConfig.Padding = UDim.new(0,6)
+LayoutConfig.Parent = ScrollConfig
+
+-- FUNÇÕES DA CONFIG
+local BtnCorBorda = Instance.new("TextButton")
+BtnCorBorda.Size = UDim2.new(1,0,0,30)
+BtnCorBorda.BackgroundColor3 = Color3.fromRGB(30,30,30)
+BtnCorBorda.Text = "🎨 Mudar Cor da Borda"
+BtnCorBorda.TextColor3 = cores.letra[indiceCorLetra]
+BtnCorBorda.Font = Enum.Font.GothamBold
+BtnCorBorda.TextSize = 12
+BtnCorBorda.Parent = ScrollConfig
+BtnCorBorda.MouseButton1Click:Connect(function()
+    indiceCorBorda = indiceCorBorda + 1
+    if indiceCorBorda > #cores.borda then indiceCorBorda = 1 end
+    Menu.BackgroundColor3 = cores.borda[indiceCorBorda]
+end)
+
+local BtnCorLetra = Instance.new("TextButton")
+BtnCorLetra.Size = UDim2.new(1,0,0,30)
+BtnCorLetra.BackgroundColor3 = Color3.fromRGB(30,30,30)
+BtnCorLetra.Text = "✍️ Mudar Cor das Letras"
+BtnCorLetra.TextColor3 = cores.letra[indiceCorLetra]
+BtnCorLetra.Font = Enum.Font.GothamBold
+BtnCorLetra.TextSize = 12
+BtnCorLetra.Parent = ScrollConfig
+BtnCorLetra.MouseButton1Click:Connect(function()
+    indiceCorLetra = indiceCorLetra + 1
+    if indiceCorLetra > #cores.letra then indiceCorLetra = 1 end
+    local cor = cores.letra[indiceCorLetra]
+    
+    TituloMenu.TextColor3 = cor
+    BtnFechar.TextColor3 = cor
+    BtnCorBorda.TextColor3 = cor
+    BtnCorLetra.TextColor3 = cor
+    BtnVelocidade.TextColor3 = cor
+    BtnFixo.TextColor3 = cor
+    
+    for _,v in pairs(ScrollTP:GetDescendants()) do
+        if v:IsA("TextLabel") then v.TextColor3 = cor end
+    end
+end)
+
+local BtnVelocidade = Instance.new("TextButton")
+BtnVelocidade.Size = UDim2.new(1,0,0,30)
+BtnVelocidade.BackgroundColor3 = Color3.fromRGB(30,30,30)
+BtnVelocidade.Text = "⚡ Velocidade: DESATIVADO"
+BtnVelocidade.TextColor3 = cores.letra[indiceCorLetra]
+BtnVelocidade.Font = Enum.Font.GothamBold
+BtnVelocidade.TextSize = 12
+BtnVelocidade.Parent = ScrollConfig
+BtnVelocidade.MouseButton1Click:Connect(function()
+    velocidadeAtivada = not velocidadeAtivada
+    BtnVelocidade.Text = velocidadeAtivada and "⚡ Velocidade: ATIVADO" or "⚡ Velocidade: DESATIVADO"
+    if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+        Player.Character.Humanoid.WalkSpeed = velocidadeAtivada and 75 or 16
+    end
+end)
+
+local BtnFixo = Instance.new("TextButton")
+BtnFixo.Size = UDim2.new(1,0,0,30)
+BtnFixo.BackgroundColor3 = Color3.fromRGB(30,30,30)
+BtnFixo.Text = "📌 Menu: MEXÍVEL"
+BtnFixo.TextColor3 = cores.letra[indiceCorLetra]
+BtnFixo.Font = Enum.Font.GothamBold
+BtnFixo.TextSize = 12
+BtnFixo.Parent = ScrollConfig
+BtnFixo.MouseButton1Click:Connect(function()
+    menuFixo = not menuFixo
+    BtnFixo.Text = menuFixo and "📌 Menu: FIXO" or "📌 Menu: MEXÍVEL"
+    Menu.Draggable = not menuFixo
+end)
+
+-- CRIAR BOTÕES DE TP
+local function CriarBotao(nome, cframe)
+    local Botao = Instance.new("Frame")
+    Botao.Size = UDim2.new(1,0,0,32)
+    Botao.BackgroundColor3 = Color3.fromRGB(20,20,20)
+    Botao.Parent = ScrollTP
+
+    local Icone = Instance.new("TextLabel")
+    Icone.Size = UDim2.new(0,18,1,0)
+    Icone.Position = UDim2.new(0,8,0,0)
+    Icone.BackgroundTransparency = 1
+    Icone.Text = "📍"
+    Icone.TextSize = 14
+    Icone.Parent = Botao
+
+    local Texto = Instance.new("TextLabel")
+    Texto.Size = UDim2.new(1,-32,1,0)
+    Texto.Position = UDim2.new(0,26,0,0)
+    Texto.BackgroundTransparency = 1
+    Texto.Text = nome
+    Texto.TextColor3 = cores.letra[indiceCorLetra]
+    Texto.Font = Enum.Font.GothamBold
+    Texto.TextSize = 12
+    Texto.TextXAlignment = Enum.TextXAlignment.Left
+    Texto.Parent = Botao
+
+    local Click = Instance.new("TextButton")
+    Click.Size = UDim2.new(1,0,1,0)
+    Click.BackgroundTransparency = 1
+    Click.Text = ""
+    Click.Parent = Botao
+    Click.MouseButton1Click:Connect(function()
+        if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+            Player.Character.HumanoidRootPart.CFrame = cframe
+        end
+    end)
+end
+
+-- ADICIONAR TODOS OS PONTOS
+CriarBotao("SPAWN", coordenadas.spaw)
+CriarBotao("COMPRAR MOLA", coordenadas.buymola)
+CriarBotao("VENDER BRAIROTS", coordenadas.sell_brairots)
+CriarBotao("BASE 1", coordenadas.base1)
+CriarBotao("BASE 2", coordenadas.base2)
+CriarBotao("BASE 3", coordenadas.base3) -- Agora na posição da Base 4
+CriarBotao("BASE 4", coordenadas.base4) -- Agora na posição da Base 3
+CriarBotao("BASE 5", coordenadas.base5)
+CriarBotao("BASE 6", coordenadas.base6)
+CriarBotao("BASE 7", coordenadas.base7)
+
+-- TROCA DE ABAS
+local function MudarAba(nome)
+    ContainerTP.Visible = nome == "TP"
+    ContainerConfig.Visible = nome == "CONFIG"
+
+    AbaTP.BackgroundColor3 = nome == "TP" and Color3.fromRGB(45,45,45) or Color3.fromRGB(25,25,25)
+    AbaTP.TextColor3 = nome == "TP" and Color3.new(1,1,1) or Color3.new(0.7,0.7,0.7)
+    
+    AbaConfig.BackgroundColor3 = nome == "CONFIG" and Color3.fromRGB(45,45,45) or Color3.fromRGB(25,25,25)
+    AbaConfig.TextColor3 = nome == "CONFIG" and Color3.new(1,1,1) or Color3.new(0.7,0.7,0.7)
+end
+
+AbaTP.MouseButton1Click:Connect(function() MudarAba("TP") end)
+AbaConfig.MouseButton1Click:Connect(function() MudarAba("CONFIG") end)
+
+-- ABRIR / FECHAR MENU
+local aberto = false
+ToggleBtn.MouseButton1Click:Connect(function()
+    aberto = not aberto
+    Menu.Visible = aberto
+    ToggleBtn.Text = aberto and "Fechar" or "Abrir"
+end)
+
+BtnFechar.MouseButton1Click:Connect(function()
+    aberto = false
+    Menu.Visible = false
+    ToggleBtn.Text = "Abrir"
+end)
+
+-- MANTER VELOCIDADE
+RunService.RenderStepped:Connect(function()
+    if velocidadeAtivada and Player.Character and Player.Character:FindFirstChild("Humanoid") then
+        Player.Character.Humanoid.WalkSpeed = 75
+    end
+end)
