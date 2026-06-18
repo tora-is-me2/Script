@@ -1,0 +1,407 @@
+-- Nome do Jogo
+local NOME_JOGO = "escape Jail for brairots"
+
+-- 🔹 COORDENADAS - ABA 1 (LOCAIS PRINCIPAIS)
+local coordenadasPrincipal = {
+    spaw = CFrame.new(106,29,-42),
+    speed_shop = CFrame.new(139,29,-31),
+    pikache = CFrame.new(76,29,-25),
+    sell_brairots = CFrame.new(-13,29,-27)
+}
+
+-- 🔹 COORDENADAS - ABA 2 (BASES)
+local coordenadasBases = {
+    spaw = CFrame.new(106,29,-42),
+    base1 = CFrame.new(39,30,-98),
+    base2 = CFrame.new(155,30,-99),
+    base3 = CFrame.new(44,30,-174),
+    base4 = CFrame.new(178,30,-168),
+    base5 = CFrame.new(37,30,-256),
+    base6 = CFrame.new(174,30,-253)
+}
+
+-- Serviços do Roblox
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+
+-- Configurações
+local velocidadeAtivada = false
+local menuFixo = false
+local cores = {
+    borda = {Color3.fromRGB(0, 180, 255), Color3.fromRGB(138, 43, 226), Color3.fromRGB(255, 100, 100), Color3.fromRGB(0, 255, 157), Color3.fromRGB(255, 204, 0)},
+    letra = {Color3.new(1,1,1), Color3.fromRGB(0, 255, 255), Color3.fromRGB(255, 220, 80), Color3.fromRGB(180, 255, 140)}
+}
+local indiceCorBorda = 1
+local indiceCorLetra = 1
+
+-- Interface Principal
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "EscapeJailMenu"
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+
+-- Cabeçalho
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(0, 220, 0, 40)
+Header.Position = UDim2.new(0.02, 0, 0.02, 0)
+Header.BackgroundColor3 = Color3.fromRGB(15,15,15)
+Header.BorderSizePixel = 0
+Header.Draggable = true
+Header.Parent = ScreenGui
+Instance.new("UICorner", Header).CornerRadius = UDim.new(0.3,0)
+
+local TituloJogo = Instance.new("TextLabel")
+TituloJogo.Text = NOME_JOGO
+TituloJogo.Size = UDim2.new(1, -55, 1, 0)
+TituloJogo.Position = UDim2.new(0, 8, 0, 0)
+TituloJogo.BackgroundTransparency = 1
+TituloJogo.TextColor3 = Color3.new(1,1,1)
+TituloJogo.Font = Enum.Font.GothamBold
+TituloJogo.TextSize = 13
+TituloJogo.TextXAlignment = Enum.TextXAlignment.Left
+TituloJogo.Parent = Header
+
+-- Botão Abrir/Fechar
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(0, 47, 0, 28)
+ToggleBtn.Position = UDim2.new(1, -50, 0.5, -14)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+ToggleBtn.Text = "Abrir"
+ToggleBtn.TextColor3 = Color3.new(1,1,1)
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.TextSize = 11
+ToggleBtn.Parent = Header
+Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(0.2,0)
+
+-- Menu Principal
+local Menu = Instance.new("Frame")
+Menu.Size = UDim2.new(0, 250, 0, 270)
+Menu.Position = UDim2.new(0.5, -125, 0.5, -135)
+Menu.BackgroundColor3 = cores.borda[indiceCorBorda]
+Menu.Visible = false
+Menu.Draggable = true
+Menu.Active = true
+Menu.Parent = ScreenGui
+Instance.new("UICorner", Menu).CornerRadius = UDim.new(0.3,0)
+
+local FundoInterno = Instance.new("Frame")
+FundoInterno.Size = UDim2.new(1, -4, 1, -4)
+FundoInterno.Position = UDim2.new(0,2,0,2)
+FundoInterno.BackgroundColor3 = Color3.fromRGB(10,10,10)
+FundoInterno.Parent = Menu
+
+-- Título do Menu
+local TituloMenu = Instance.new("TextLabel")
+TituloMenu.Text = "TP MENU | ESCAPE JAIL"
+TituloMenu.Size = UDim2.new(1, -35, 0, 35)
+TituloMenu.Position = UDim2.new(0,8,0,0)
+TituloMenu.BackgroundColor3 = Color3.fromRGB(20,20,20)
+TituloMenu.TextColor3 = cores.letra[indiceCorLetra]
+TituloMenu.Font = Enum.Font.GothamBold
+TituloMenu.TextSize = 14
+TituloMenu.TextXAlignment = Enum.TextXAlignment.Left
+TituloMenu.Parent = FundoInterno
+
+-- Botão Fechar
+local BtnFechar = Instance.new("TextButton")
+BtnFechar.Size = UDim2.new(0,35,0,35)
+BtnFechar.Position = UDim2.new(1,-35,0,0)
+BtnFechar.BackgroundColor3 = Color3.fromRGB(30,30,30)
+BtnFechar.Text = "X"
+BtnFechar.TextColor3 = cores.letra[indiceCorLetra]
+BtnFechar.Font = Enum.Font.GothamBold
+BtnFechar.TextSize = 14
+BtnFechar.Parent = FundoInterno
+
+-- Abas Lado
+local AbasLado = Instance.new("Frame")
+AbasLado.Size = UDim2.new(0,60,1,-45)
+AbasLado.Position = UDim2.new(0,0,0,35)
+AbasLado.BackgroundColor3 = Color3.fromRGB(20,20,20)
+AbasLado.Parent = FundoInterno
+
+-- Aba 1: LOCAIS PRINCIPAIS
+local Aba1 = Instance.new("TextButton")
+Aba1.Size = UDim2.new(1,0,0,35)
+Aba1.BackgroundColor3 = Color3.fromRGB(45,45,45)
+Aba1.Text = "LOCAIS"
+Aba1.TextColor3 = Color3.new(1,1,1)
+Aba1.Font = Enum.Font.GothamBold
+Aba1.TextSize = 12
+Aba1.Parent = AbasLado
+
+-- Aba 2: BASES
+local Aba2 = Instance.new("TextButton")
+Aba2.Size = UDim2.new(1,0,0,35)
+Aba2.Position = UDim2.new(0,0,0,35)
+Aba2.BackgroundColor3 = Color3.fromRGB(25,25,25)
+Aba2.Text = "BASES"
+Aba2.TextColor3 = Color3.new(0.7,0.7,0.7)
+Aba2.Font = Enum.Font.GothamBold
+Aba2.TextSize = 12
+Aba2.Parent = AbasLado
+
+-- Aba 3: CONFIG
+local AbaConfig = Instance.new("TextButton")
+AbaConfig.Size = UDim2.new(1,0,0,35)
+AbaConfig.Position = UDim2.new(0,0,0,70)
+AbaConfig.BackgroundColor3 = Color3.fromRGB(25,25,25)
+AbaConfig.Text = "CONFIG"
+AbaConfig.TextColor3 = Color3.new(0.7,0.7,0.7)
+AbaConfig.Font = Enum.Font.GothamBold
+AbaConfig.TextSize = 12
+AbaConfig.Parent = AbasLado
+
+-- --------------------------
+-- ABA 1: LOCAIS PRINCIPAIS (COM ROLAGEM)
+-- --------------------------
+local ContainerAba1 = Instance.new("Frame")
+ContainerAba1.Size = UDim2.new(1,-64,1,-40)
+ContainerAba1.Position = UDim2.new(0,64,0,35)
+ContainerAba1.BackgroundTransparency = 1
+ContainerAba1.Visible = true
+ContainerAba1.Parent = FundoInterno
+
+local ScrollAba1 = Instance.new("ScrollingFrame")
+ScrollAba1.Size = UDim2.new(1,0,1,0)
+ScrollAba1.BackgroundTransparency = 1
+ScrollAba1.ScrollBarThickness = 4
+ScrollAba1.ScrollBarImageColor3 = Color3.fromRGB(0, 180, 255)
+ScrollAba1.CanvasSize = UDim2.new(1,0,0,160)
+ScrollAba1.Parent = ContainerAba1
+
+local LayoutAba1 = Instance.new("UIListLayout")
+LayoutAba1.Padding = UDim.new(0,6)
+LayoutAba1.Parent = ScrollAba1
+
+-- --------------------------
+-- ABA 2: BASES (COM ROLAGEM)
+-- --------------------------
+local ContainerAba2 = Instance.new("Frame")
+ContainerAba2.Size = UDim2.new(1,-64,1,-40)
+ContainerAba2.Position = UDim2.new(0,64,0,35)
+ContainerAba2.BackgroundTransparency = 1
+ContainerAba2.Visible = false
+ContainerAba2.Parent = FundoInterno
+
+local ScrollAba2 = Instance.new("ScrollingFrame")
+ScrollAba2.Size = UDim2.new(1,0,1,0)
+ScrollAba2.BackgroundTransparency = 1
+ScrollAba2.ScrollBarThickness = 4
+ScrollAba2.ScrollBarImageColor3 = Color3.fromRGB(0, 180, 255)
+ScrollAba2.CanvasSize = UDim2.new(1,0,0,240)
+ScrollAba2.Parent = ContainerAba2
+
+local LayoutAba2 = Instance.new("UIListLayout")
+LayoutAba2.Padding = UDim.new(0,6)
+LayoutAba2.Parent = ScrollAba2
+
+-- --------------------------
+-- ABA 3: CONFIGURAÇÕES
+-- --------------------------
+local ContainerConfig = Instance.new("Frame")
+ContainerConfig.Size = UDim2.new(1,-64,1,-40)
+ContainerConfig.Position = UDim2.new(0,64,0,35)
+ContainerConfig.BackgroundTransparency = 1
+ContainerConfig.Visible = false
+ContainerConfig.Parent = FundoInterno
+
+local ScrollConfig = Instance.new("ScrollingFrame")
+ScrollConfig.Size = UDim2.new(1,0,1,0)
+ScrollConfig.BackgroundTransparency = 1
+ScrollConfig.ScrollBarThickness = 4
+ScrollConfig.ScrollBarImageColor3 = Color3.fromRGB(0, 180, 255)
+ScrollConfig.CanvasSize = UDim2.new(1,0,0,130)
+ScrollConfig.Parent = ContainerConfig
+
+local LayoutConfig = Instance.new("UIListLayout")
+LayoutConfig.Padding = UDim.new(0,6)
+LayoutConfig.Parent = ScrollConfig
+
+-- --------------------------
+-- FUNÇÕES DA CONFIG
+-- --------------------------
+-- Mudar Cor da Borda
+local BtnCorBorda = Instance.new("TextButton")
+BtnCorBorda.Size = UDim2.new(1,0,0,30)
+BtnCorBorda.BackgroundColor3 = Color3.fromRGB(30,30,30)
+BtnCorBorda.Text = "🎨 Mudar Cor da Borda"
+BtnCorBorda.TextColor3 = cores.letra[indiceCorLetra]
+BtnCorBorda.Font = Enum.Font.GothamBold
+BtnCorBorda.TextSize = 12
+BtnCorBorda.Parent = ScrollConfig
+BtnCorBorda.MouseButton1Click:Connect(function()
+    indiceCorBorda = indiceCorBorda + 1
+    if indiceCorBorda > #cores.borda then indiceCorBorda = 1 end
+    Menu.BackgroundColor3 = cores.borda[indiceCorBorda]
+end)
+
+-- Mudar Cor das Letras
+local BtnCorLetra = Instance.new("TextButton")
+BtnCorLetra.Size = UDim2.new(1,0,0,30)
+BtnCorLetra.BackgroundColor3 = Color3.fromRGB(30,30,30)
+BtnCorLetra.Text = "✍️ Mudar Cor das Letras"
+BtnCorLetra.TextColor3 = cores.letra[indiceCorLetra]
+BtnCorLetra.Font = Enum.Font.GothamBold
+BtnCorLetra.TextSize = 12
+BtnCorLetra.Parent = ScrollConfig
+BtnCorLetra.MouseButton1Click:Connect(function()
+    indiceCorLetra = indiceCorLetra + 1
+    if indiceCorLetra > #cores.letra then indiceCorLetra = 1 end
+    local corNova = cores.letra[indiceCorLetra]
+    
+    TituloMenu.TextColor3 = corNova
+    BtnFechar.TextColor3 = corNova
+    BtnCorBorda.TextColor3 = corNova
+    BtnCorLetra.TextColor3 = corNova
+    BtnVelocidade.TextColor3 = corNova
+    BtnFixo.TextColor3 = corNova
+    
+    for _,botao in pairs(ScrollAba1:GetDescendants()) do
+        if botao:IsA("TextLabel") then botao.TextColor3 = corNova end
+    end
+    for _,botao in pairs(ScrollAba2:GetDescendants()) do
+        if botao:IsA("TextLabel") then botao.TextColor3 = corNova end
+    end
+end)
+
+-- Velocidade
+local BtnVelocidade = Instance.new("TextButton")
+BtnVelocidade.Size = UDim2.new(1,0,0,30)
+BtnVelocidade.BackgroundColor3 = Color3.fromRGB(30,30,30)
+BtnVelocidade.Text = "⚡ Velocidade: DESATIVADO"
+BtnVelocidade.TextColor3 = cores.letra[indiceCorLetra]
+BtnVelocidade.Font = Enum.Font.GothamBold
+BtnVelocidade.TextSize = 12
+BtnVelocidade.Parent = ScrollConfig
+BtnVelocidade.MouseButton1Click:Connect(function()
+    velocidadeAtivada = not velocidadeAtivada
+    BtnVelocidade.Text = velocidadeAtivada and "⚡ Velocidade: ATIVADO" or "⚡ Velocidade: DESATIVADO"
+    if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+        Player.Character.Humanoid.WalkSpeed = velocidadeAtivada and 80 or 16
+    end
+end)
+
+-- Menu Fixo
+local BtnFixo = Instance.new("TextButton")
+BtnFixo.Size = UDim2.new(1,0,0,30)
+BtnFixo.BackgroundColor3 = Color3.fromRGB(30,30,30)
+BtnFixo.Text = "📌 Menu: MEXÍVEL"
+BtnFixo.TextColor3 = cores.letra[indiceCorLetra]
+BtnFixo.Font = Enum.Font.GothamBold
+BtnFixo.TextSize = 12
+BtnFixo.Parent = ScrollConfig
+BtnFixo.MouseButton1Click:Connect(function()
+    menuFixo = not menuFixo
+    BtnFixo.Text = menuFixo and "📌 Menu: FIXO" or "📌 Menu: MEXÍVEL"
+    Menu.Draggable = not menuFixo
+end)
+
+-- --------------------------
+-- FUNÇÃO CRIAR BOTÕES DE TP
+-- --------------------------
+local function CriarBotaoTP(nome, cframe, painel)
+    local Botao = Instance.new("Frame")
+    Botao.Size = UDim2.new(1,0,0,32)
+    Botao.BackgroundColor3 = Color3.fromRGB(20,20,20)
+    Botao.Parent = painel
+
+    local Icone = Instance.new("TextLabel")
+    Icone.Size = UDim2.new(0,18,1,0)
+    Icone.Position = UDim2.new(0,8,0,0)
+    Icone.BackgroundTransparency = 1
+    Icone.Text = "📍"
+    Icone.TextSize = 14
+    Icone.TextYAlignment = Enum.TextYAlignment.Center
+    Icone.Parent = Botao
+
+    local TextoNome = Instance.new("TextLabel")
+    TextoNome.Size = UDim2.new(1,-32,1,0)
+    TextoNome.Position = UDim2.new(0, 26, 0, 0)
+    TextoNome.BackgroundTransparency = 1
+    TextoNome.Text = nome
+    TextoNome.TextColor3 = cores.letra[indiceCorLetra]
+    TextoNome.Font = Enum.Font.GothamBold
+    TextoNome.TextSize = 12
+    TextoNome.TextXAlignment = Enum.TextXAlignment.Left
+    TextoNome.Parent = Botao
+
+    local BotaoClique = Instance.new("TextButton")
+    BotaoClique.Size = UDim2.new(1,0,1,0)
+    BotaoClique.BackgroundTransparency = 1
+    BotaoClique.Text = ""
+    BotaoClique.Parent = Botao
+    BotaoClique.MouseButton1Click:Connect(function()
+        if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+            Player.Character.HumanoidRootPart.CFrame = cframe
+        end
+    end)
+end
+
+-- --------------------------
+-- ADICIONAR BOTÕES NA ABA 1
+-- --------------------------
+CriarBotaoTP("SPAWN", coordenadasPrincipal.spaw, ScrollAba1)
+CriarBotaoTP("SPEED / SHOP", coordenadasPrincipal.speed_shop, ScrollAba1)
+CriarBotaoTP("PIKACHE", coordenadasPrincipal.pikache, ScrollAba1)
+CriarBotaoTP("VENDER BRAIROTS", coordenadasPrincipal.sell_brairots, ScrollAba1)
+
+-- --------------------------
+-- ADICIONAR BOTÕES NA ABA 2
+-- --------------------------
+CriarBotaoTP("SPAWN", coordenadasBases.spaw, ScrollAba2)
+CriarBotaoTP("BASE 1", coordenadasBases.base1, ScrollAba2)
+CriarBotaoTP("BASE 2", coordenadasBases.base2, ScrollAba2)
+CriarBotaoTP("BASE 3", coordenadasBases.base3, ScrollAba2)
+CriarBotaoTP("BASE 4", coordenadasBases.base4, ScrollAba2)
+CriarBotaoTP("BASE 5", coordenadasBases.base5, ScrollAba2)
+CriarBotSTP("BASE 6", coordenadasBases.base6, ScrollAba2)
+
+-- --------------------------
+-- SISTEMA DE TROCA DE ABAS
+-- --------------------------
+local function MudarAba(nomeAba)
+    ContainerAba1.Visible = (nomeAba == "LOCAIS")
+    ContainerAba2.Visible = (nomeAba == "BASES")
+    ContainerConfig.Visible = (nomeAba == "CONFIG")
+
+    -- Atualiza cores das abas
+    Aba1.BackgroundColor3 = nomeAba == "LOCAIS" and Color3.fromRGB(45,45,45) or Color3.fromRGB(25,25,25)
+    Aba1.TextColor3 = nomeAba == "LOCAIS" and Color3.new(1,1,1) or Color3.new(0.7,0.7,0.7)
+    
+    Aba2.BackgroundColor3 = nomeAba == "BASES" and Color3.fromRGB(45,45,45) or Color3.fromRGB(25,25,25)
+    Aba2.TextColor3 = nomeAba == "BASES" and Color3.new(1,1,1) or Color3.new(0.7,0.7,0.7)
+    
+    AbaConfig.BackgroundColor3 = nomeAba == "CONFIG" and Color3.fromRGB(45,45,45) or Color3.fromRGB(25,25,25)
+    AbaConfig.TextColor3 = nomeAba == "CONFIG" and Color3.new(1,1,1) or Color3.new(0.7,0.7,0.7)
+end
+
+Aba1.MouseButton1Click:Connect(function() MudarAba("LOCAIS") end)
+Aba2.MouseButton1Click:Connect(function() MudarAba("BASES") end)
+AbaConfig.MouseButton1Click:Connect(function() MudarAba("CONFIG") end)
+
+-- --------------------------
+-- ABRIR / FECHAR MENU
+-- --------------------------
+local menuAberto = false
+ToggleBtn.MouseButton1Click:Connect(function()
+    menuAberto = not menuAberto
+    Menu.Visible = menuAberto
+    ToggleBtn.Text = menuAberto and "Fechar" or "Abrir"
+end)
+
+BtnFechar.MouseButton1Click:Connect(function()
+    menuAberto = false
+    Menu.Visible = false
+    ToggleBtn.Text = "Abrir"
+end)
+
+-- --------------------------
+-- MANTER VELOCIDADE
+-- --------------------------
+RunService.RenderStepped:Connect(function()
+    if velocidadeAtivada and Player.Character and Player.Character:FindFirstChild("Humanoid") then
+        Player.Character.Humanoid.WalkSpeed = 80
+    end
+end)
