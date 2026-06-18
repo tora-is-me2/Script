@@ -1,0 +1,370 @@
+-- SERVIÇOS
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local Player = Players.LocalPlayer
+
+-- ==============================================
+-- COORDENADAS EXATAS
+-- ==============================================
+local TPs = {
+    ["TREINAMENTO"] = CFrame.new(301, 107, -76),
+    ["SPAWN"]       = CFrame.new(288, 103, 91),
+    ["ZONA 9"]      = CFrame.new(273, 103, 1758),
+    ["ZONA 8"]      = CFrame.new(263, 103, 1576)
+}
+
+-- ==============================================
+-- INTERFACE COM NOME NOVO (IGUAL AO SEU)
+-- ==============================================
+local Gui = Instance.new("ScreenGui")
+Gui.Name = "SlicSlimeBrainrots"
+Gui.Parent = Player:WaitForChild("PlayerGui")
+Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Gui.ResetOnSpawn = false
+Gui.Enabled = true
+
+-- FUNÇÃO DE SOM DE CLIQUE
+local function AdicionarSom(botao)
+    botao.MouseButton1Click:Connect(function()
+        local som = Instance.new("Sound")
+        som.SoundId = "rbxassetid://125254146"
+        som.Volume = 0.5
+        som.Parent = Gui
+        som:Play()
+        game.Debris:AddItem(som, 1)
+    end)
+end
+
+-- QUADRADO FLUTUANTE COM NOME: SLIC SLIME FOR BRAINROTS
+local QuadradoJogo = Instance.new("Frame")
+QuadradoJogo.Size = UDim2.new(0, 165, 0, 45)
+QuadradoJogo.Position = UDim2.new(0.02, 0, 0.1, 0)
+QuadradoJogo.BackgroundColor3 = Color3.new(0.08, 0.08, 0.08)
+QuadradoJogo.BorderSizePixel = 2
+QuadradoJogo.BorderColor3 = Color3.new(0, 0.5, 1) -- AZUL
+QuadradoJogo.Draggable = true
+QuadradoJogo.Active = true
+QuadradoJogo.ZIndex = 10
+QuadradoJogo.Visible = true
+QuadradoJogo.Parent = Gui
+
+local NomeJogo = Instance.new("TextLabel")
+NomeJogo.Size = UDim2.new(0.65, 0, 1, 0)
+NomeJogo.Position = UDim2.new(0.05, 0, 0, 0)
+NomeJogo.BackgroundTransparency = 1
+NomeJogo.Text = "SLIC SLIME FOR BRAINROTS"
+NomeJogo.TextColor3 = Color3.new(1,1,1)
+NomeJogo.Font = Enum.Font.GothamBold
+NomeJogo.TextSize = 8
+NomeJogo.TextWrapped = true
+NomeJogo.ZIndex = 11
+NomeJogo.Parent = QuadradoJogo
+
+-- TOGGLE
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(0.30, 0, 0.82, 0)
+ToggleBtn.Position = UDim2.new(0.68, 0, 0.09, 0)
+ToggleBtn.BackgroundColor3 = Color3.new(0, 0.35, 0.7)
+ToggleBtn.BorderSizePixel = 1
+ToggleBtn.BorderColor3 = Color3.new(1,1,1)
+ToggleBtn.Text = "ABRIR"
+ToggleBtn.TextColor3 = Color3.new(1,1,1)
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.TextSize = 9
+ToggleBtn.ZIndex = 11
+ToggleBtn.Parent = QuadradoJogo
+AdicionarSom(ToggleBtn)
+
+-- MENU PRINCIPAL (TAMANHO 250x200 - EXATO COMO O SEU)
+local Menu = Instance.new("Frame")
+Menu.Size = UDim2.new(0, 250, 0, 200)
+Menu.Position = UDim2.new(0.5, -125, 0.5, -100)
+Menu.BackgroundColor3 = Color3.new(0.06, 0.06, 0.06)
+Menu.BorderSizePixel = 3
+Menu.BorderColor3 = Color3.new(0, 0.5, 1)
+Menu.Draggable = true
+Menu.Active = true
+Menu.ZIndex = 9
+Menu.Visible = true
+Menu.Parent = Gui
+
+-- CABEÇALHO
+local Cabecalho = Instance.new("Frame")
+Cabecalho.Size = UDim2.new(1,0,0,35)
+Cabecalho.BackgroundColor3 = Color3.new(0.09,0.09,0.09)
+Cabecalho.Parent = Menu
+
+local Titulo = Instance.new("TextLabel")
+Titulo.Size = UDim2.new(0.8,0,1,0)
+Titulo.Position = UDim2.new(0.04,0,0,0)
+Titulo.BackgroundTransparency = 1
+Titulo.Text = "TELETRANSPORTE"
+Titulo.TextColor3 = Color3.new(1,1,1)
+Titulo.Font = Enum.Font.GothamBold
+Titulo.TextSize = 11
+Titulo.ZIndex = 11
+Titulo.Parent = Cabecalho
+
+local FecharBtn = Instance.new("TextButton")
+FecharBtn.Size = UDim2.new(0.14,0,0.82,0)
+FecharBtn.Position = UDim2.new(0.84,0,0.09,0)
+FecharBtn.BackgroundColor3 = Color3.new(0.12,0.12,0.12)
+FecharBtn.Text = "X"
+FecharBtn.TextColor3 = Color3.new(1,1,1)
+FecharBtn.Font = Enum.Font.GothamBold
+FecharBtn.TextSize = 16
+FecharBtn.ZIndex = 11
+FecharBtn.Parent = Cabecalho
+AdicionarSom(FecharBtn)
+
+-- ABAS LADO ESQUERDO (ADICIONADA ABA SET)
+local AbasLateral = Instance.new("Frame")
+AbasLateral.Size = UDim2.new(0.28,0,0.80,0) -- Aumentei um pouco para caber a 3ª aba
+AbasLateral.Position = UDim2.new(0.03,0,0.15,0)
+AbasLateral.BackgroundColor3 = Color3.new(0.09,0.09,0.09)
+AbasLateral.ZIndex = 10
+AbasLateral.Parent = Menu
+
+local TP_Aba = Instance.new("TextButton")
+TP_Aba.Size = UDim2.new(1,0,0.30,0)
+TP_Aba.Position = UDim2.new(0,0,0.02,0)
+TP_Aba.BackgroundColor3 = Color3.new(0,0.25,0.6) -- ATIVA
+TP_Aba.Text = "TP"
+TP_Aba.TextColor3 = Color3.new(1,1,1)
+TP_Aba.Font = Enum.Font.GothamBold
+TP_Aba.TextSize = 13
+TP_Aba.ZIndex = 11
+TP_Aba.Parent = AbasLateral
+AdicionarSom(TP_Aba)
+
+local SET_Aba = Instance.new("TextButton") -- NOVA ABA SET
+SET_Aba.Size = UDim2.new(1,0,0.30,0)
+SET_Aba.Position = UDim2.new(0,0,0.34,0)
+SET_Aba.BackgroundColor3 = Color3.new(0.09,0.09,0.09)
+SET_Aba.Text = "SET"
+SET_Aba.TextColor3 = Color3.new(0.7,0.7,0.7)
+SET_Aba.Font = Enum.Font.GothamBold
+SET_Aba.TextSize = 12
+SET_Aba.ZIndex = 11
+SET_Aba.Parent = AbasLateral
+AdicionarSom(SET_Aba)
+
+local INFO_Aba = Instance.new("TextButton")
+INFO_Aba.Size = UDim2.new(1,0,0.30,0)
+INFO_Aba.Position = UDim2.new(0,0,0.66,0)
+INFO_Aba.BackgroundColor3 = Color3.new(0.09,0.09,0.09)
+INFO_Aba.Text = "INFO"
+INFO_Aba.TextColor3 = Color3.new(0.7,0.7,0.7)
+INFO_Aba.Font = Enum.Font.GothamBold
+INFO_Aba.TextSize = 12
+INFO_Aba.ZIndex = 11
+INFO_Aba.Parent = AbasLateral
+AdicionarSom(INFO_Aba)
+
+-- CONTEÚDO TP (SÓ TELETRANSPORTES, SEM NOCLIP)
+local TP_Conteudo = Instance.new("Frame")
+TP_Conteudo.Size = UDim2.new(0.66,0,0.68,0)
+TP_Conteudo.Position = UDim2.new(0.31,0,0.23,0)
+TP_Conteudo.BackgroundColor3 = Color3.new(0.07,0.07,0.07)
+TP_Conteudo.Visible = true
+TP_Conteudo.ZIndex = 10
+TP_Conteudo.Parent = Menu
+
+-- CONTEÚDO SET (ONDE FICA O NOCLIP)
+local SET_Conteudo = Instance.new("Frame")
+SET_Conteudo.Size = UDim2.new(0.66,0,0.68,0)
+SET_Conteudo.Position = UDim2.new(0.31,0,0.23,0)
+SET_Conteudo.BackgroundColor3 = Color3.new(0.07,0.07,0.07)
+SET_Conteudo.Visible = false
+SET_Conteudo.ZIndex = 10
+SET_Conteudo.Parent = Menu
+
+-- CONTEÚDO INFO
+local INFO_Conteudo = Instance.new("Frame")
+INFO_Conteudo.Size = UDim2.new(0.66,0,0.68,0)
+INFO_Conteudo.Position = UDim2.new(0.31,0,0.23,0)
+INFO_Conteudo.BackgroundColor3 = Color3.new(0.07,0.07,0.07)
+INFO_Conteudo.Visible = false
+INFO_Conteudo.ZIndex = 10
+INFO_Conteudo.Parent = Menu
+
+-- AVISO NA TELA
+local function MostrarAviso(mensagem)
+    local Aviso = Instance.new("Frame")
+    Aviso.Size = UDim2.new(0, 220, 0, 50)
+    Aviso.Position = UDim2.new(0.5, -110, 0.05, 0)
+    Aviso.BackgroundColor3 = Color3.new(0.08, 0.08, 0.08)
+    Aviso.BorderSizePixel = 2
+    Aviso.BorderColor3 = Color3.new(0, 0.5, 1)
+    Aviso.ZIndex = 999
+    Aviso.Parent = Gui
+
+    local TextoAviso = Instance.new("TextLabel")
+    TextoAviso.Size = UDim2.new(1, -10, 1, 0)
+    TextoAviso.Position = UDim2.new(0, 5, 0, 0)
+    TextoAviso.BackgroundTransparency = 1
+    TextoAviso.Text = mensagem
+    TextoAviso.TextColor3 = Color3.new(1,1,1)
+    TextoAviso.Font = Enum.Font.GothamBold
+    TextoAviso.TextSize = 12
+    TextoAviso.ZIndex = 1000
+    TextoAviso.Parent = Aviso
+
+    TweenService:Create(Aviso, TweenInfo.new(0.3), {Position = UDim2.new(0.5, -110, 0.08, 0)}):Play()
+    task.delay(2, function()
+        TweenService:Create(Aviso, TweenInfo.new(0.3), {Position = UDim2.new(0.5, -110, -0.05, 0)}):Play()
+        task.wait(0.3)
+        Aviso:Destroy()
+    end)
+end
+
+-- BOTÕES DE TP (APENAS TELETRANSPORTE)
+local yPos = 0.08
+for Nome, Cfrm in pairs(TPs) do
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(0.92, 0, 0, 38)
+    Btn.Position = UDim2.new(0.04, 0, yPos, 0)
+    Btn.BackgroundColor3 = Color3.new(0.12,0.12,0.12)
+    Btn.BorderSizePixel = 1
+    Btn.BorderColor3 = Color3.new(0,0.5,1)
+    Btn.Text = "📍 "..Nome
+    Btn.TextColor3 = Color3.new(1,1,1)
+    Btn.Font = Enum.Font.GothamBold
+    Btn.TextSize = 11
+    Btn.ZIndex = 11
+    Btn.Parent = TP_Conteudo
+    AdicionarSom(Btn)
+
+    Btn.MouseButton1Click:Connect(function()
+        local Char = Player.Character or Player.CharacterAdded:Wait()
+        if Char and Char:FindFirstChild("HumanoidRootPart") then
+            task.spawn(function()
+                Char.HumanoidRootPart.CFrame = Cfrm
+                MostrarAviso("✅ Teleportado para: " .. Nome)
+            end)
+        end
+    end)
+    yPos += 0.26
+end
+
+-- ==============================================
+-- NOCLIP APENAS NA ABA SET
+-- ==============================================
+local NoClipAtivo = false
+local NoClipBtn = Instance.new("TextButton")
+NoClipBtn.Size = UDim2.new(0.92, 0, 0, 38)
+NoClipBtn.Position = UDim2.new(0.04, 0, 0.08, 0)
+NoClipBtn.BackgroundColor3 = Color3.new(0.12,0.12,0.12)
+NoClipBtn.BorderSizePixel = 1
+NoClipBtn.BorderColor3 = Color3.new(0,0.5,1)
+NoClipBtn.Text = "🔓 NOCLIP: DESATIVADO"
+NoClipBtn.TextColor3 = Color3.new(1,1,1)
+NoClipBtn.Font = Enum.Font.GothamBold
+NoClipBtn.TextSize = 11
+NoClipBtn.ZIndex = 11
+NoClipBtn.Parent = SET_Conteudo
+AdicionarSom(NoClipBtn)
+
+-- LÓGICA DO NOCLIP
+RunService.RenderStepped:Connect(function()
+    if NoClipAtivo and Player.Character then
+        local Humanoid = Player.Character:FindFirstChild("Humanoid")
+        if Humanoid then
+            Humanoid:SetStateEnabled(Enum.HumanoidStateType.Climbing, false)
+            for _, Parte in pairs(Player.Character:GetChildren()) do
+                if Parte:IsA("BasePart") then
+                    Parte.CanCollide = false
+                end
+            end
+        end
+    end
+end)
+
+-- ATIVAR / DESATIVAR NOCLIP
+NoClipBtn.MouseButton1Click:Connect(function()
+    NoClipAtivo = not NoClipAtivo
+    if NoClipAtivo then
+        NoClipBtn.Text = "🔒 NOCLIP: ATIVADO"
+        NoClipBtn.BackgroundColor3 = Color3.new(0, 0.5, 0.2)
+        MostrarAviso("✅ NoClip ATIVADO")
+    else
+        NoClipBtn.Text = "🔓 NOCLIP: DESATIVADO"
+        NoClipBtn.BackgroundColor3 = Color3.new(0.12,0.12,0.12)
+        MostrarAviso("❌ NoClip DESATIVADO")
+        -- Restaurar colisão ao desativar
+        if Player.Character then
+            for _, Parte in pairs(Player.Character:GetChildren()) do
+                if Parte:IsA("BasePart") then
+                    Parte.CanCollide = true
+                end
+            end
+            local Humanoid = Player.Character:FindFirstChild("Humanoid")
+            if Humanoid then
+                Humanoid:SetStateEnabled(Enum.HumanoidStateType.Climbing, true)
+            end
+        end
+    end
+end)
+
+-- TEXTO DA ABA INFO
+local TextoInfo = Instance.new("TextLabel")
+TextoInfo.Size = UDim2.new(0.9,0,0.9,0)
+TextoInfo.Position = UDim2.new(0.05,0,0.05,0)
+TextoInfo.BackgroundTransparency = 1
+TextoInfo.Text = "✅ TP SEM PAUSAR\n✅ NOCLIP NA ABA SET\n✅ MENU ARRASTÁVEL\n✅ VISUAL PRETO & AZUL\n✅ SLIC SLIME FOR BRAINROTS"
+TextoInfo.TextColor3 = Color3.new(1,1,1)
+TextoInfo.Font = Enum.Font.GothamBold
+TextoInfo.TextSize = 10
+TextoInfo.TextWrapped = true
+TextoInfo.ZIndex = 11
+TextoInfo.Parent = INFO_Conteudo
+
+-- ==============================================
+-- SISTEMA DE ABAS (ATUALIZADO COM A ABA SET)
+-- ==============================================
+local function MudarAba(abaAtiva)
+    -- Resetar todas
+    TP_Aba.BackgroundColor3 = Color3.new(0.09,0.09,0.09)
+    TP_Aba.TextColor3 = Color3.new(0.7,0.7,0.7)
+    SET_Aba.BackgroundColor3 = Color3.new(0.09,0.09,0.09)
+    SET_Aba.TextColor3 = Color3.new(0.7,0.7,0.7)
+    INFO_Aba.BackgroundColor3 = Color3.new(0.09,0.09,0.09)
+    INFO_Aba.TextColor3 = Color3.new(0.7,0.7,0.7)
+    
+    -- Esconder todos os conteúdos
+    TP_Conteudo.Visible = false
+    SET_Conteudo.Visible = false
+    INFO_Conteudo.Visible = false
+
+    -- Ativar aba selecionada
+    if abaAtiva == "TP" then
+        TP_Aba.BackgroundColor3 = Color3.new(0,0.25,0.6)
+        TP_Aba.TextColor3 = Color3.new(1,1,1)
+        TP_Conteudo.Visible = true
+    elseif abaAtiva == "SET" then
+        SET_Aba.BackgroundColor3 = Color3.new(0,0.25,0.6)
+        SET_Aba.TextColor3 = Color3.new(1,1,1)
+        SET_Conteudo.Visible = true
+    elseif abaAtiva == "INFO" then
+        INFO_Aba.BackgroundColor3 = Color3.new(0,0.25,0.6)
+        INFO_Aba.TextColor3 = Color3.new(1,1,1)
+        INFO_Conteudo.Visible = true
+    end
+end
+
+-- CONECTAR BOTÕES DAS ABAS
+TP_Aba.MouseButton1Click:Connect(function() MudarAba("TP") end)
+SET_Aba.MouseButton1Click:Connect(function() MudarAba("SET") end)
+INFO_Aba.MouseButton1Click:Connect(function() MudarAba("INFO") end)
+
+-- ABRIR / FECHAR
+ToggleBtn.MouseButton1Click:Connect(function()
+    Menu.Visible = not Menu.Visible
+    ToggleBtn.Text = Menu.Visible and "FECHAR" or "ABRIR"
+end)
+
+FecharBtn.MouseButton1Click:Connect(function()
+    Menu.Visible = false
+    ToggleBtn.Text = "ABRIR"
+end)
